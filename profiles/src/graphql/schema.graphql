@@ -1,0 +1,81 @@
+extend schema
+  @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key"])
+
+scalar DateTime
+
+"""
+An account is a unique Auth0 user
+"""
+type Account @key(fields: "id") {
+  id: ID!
+  profile: Profile
+}
+
+"""
+Provides data to create a new user profile
+"""
+input CreateProfileInput {
+  accountId: ID!
+  fullName: String
+  interests: [String]
+  username: String!
+}
+
+"""
+Provides data to update an existing profile.
+"""
+input UpdateProfileInput {
+  accountId: ID!
+  fullName: String
+  interests: [String]
+  username: String
+}
+
+"""
+Provides the unique ID of an existing profile to add or remove from a network
+"""
+input NetworkMemberInput {
+  accountId: ID!
+  networkMemberId: ID!
+}
+
+"""
+A Profile contains metadata about a specific user
+"""
+type Profile @key(fields: "id") {
+  id: ID!
+  createdAt: DateTime!
+  account: Account!
+  fullName: String
+  interests: [String]
+  username: String!
+  isInNetwork: Boolean
+  network: [Profile]
+}
+
+type Query {
+  "Retrieves a single profile by username"
+  profile(username: String!): Profile! @private
+  "Retrieves a list of profiles."
+  profiles: [Profile] @private
+  "Performs a search of user profiles. Results are available in descending order by relevance only."
+  searchProfiles(query: String!): [Profile]
+}
+
+type Mutation {
+  "Creates a new profile tied to an Auth0 account."
+  createProfile(input: CreateProfileInput!): Profile!
+    @owner(argumentName: "input.accountId")
+  "Updates a user's profile details."
+  updateProfile(input: UpdateProfileInput!): Profile!
+    @owner(argumentName: "input.accountId")
+  "Deletes a user profile."
+  deleteProfile(accountId: ID!): Boolean!
+    @owner(argumentName: "input.accountId")
+  "Allows one user to add another user to their network"
+  addToNetwork(input: NetworkMemberInput!): Profile!
+    @owner(argumentName: "input.accountId")
+  "Allows one user to remove another user from their network."
+  removeFromNetwork(input: NetworkMemberInput!): Profile!
+    @owner(argumentName: "input.accountId")
+}

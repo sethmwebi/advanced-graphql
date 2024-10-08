@@ -1,0 +1,25 @@
+{
+  "name": "profiles",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon -r dotenv/config -e env,graphql,js ./src/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@apollo/subgraph": "^2.0.3",
+    "apollo-datasource": "^3.3.2",
+    "apollo-server": "^3.13.0",
+    "dotenv": "^16.4.5",
+    "graphql": "^16.9.0",
+    "mongoose": "^6.13.3"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
+}
